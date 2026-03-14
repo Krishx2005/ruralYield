@@ -27,12 +27,23 @@ const body = (text) => (
 );
 
 const sponsorBadges = () => (
-  <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
+  <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', justifyContent: 'center' }}>
     {['AWS', 'ElevenLabs', 'Featherless.AI', 'Jaseci'].map((s) => (
       <span key={s} style={{ padding: '5px 16px', borderRadius: 999, fontSize: 12, fontWeight: 500, border: '1px solid #ffffff30', color: '#ffffffcc' }}>{s}</span>
     ))}
   </div>
 );
+
+/* ── SVG Icons ── */
+const svgProps = { width: 28, height: 28, viewBox: '0 0 24 24', fill: 'none', stroke: GREEN, strokeWidth: 1.8, strokeLinecap: 'round', strokeLinejoin: 'round' };
+
+const IconMic = () => <svg {...svgProps}><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>;
+const IconBrain = () => <svg {...svgProps}><path d="M12 2a4 4 0 0 0-4 4v1a4 4 0 0 0-3 3.87V12a4 4 0 0 0 2.5 3.7V18a4 4 0 0 0 4.5 3.96A4 4 0 0 0 16.5 18v-2.3A4 4 0 0 0 19 12v-1.13A4 4 0 0 0 16 7V6a4 4 0 0 0-4-4z"/><path d="M12 2v20"/></svg>;
+const IconGraph = () => <svg {...svgProps}><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>;
+const IconCloud = () => <svg {...svgProps}><path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"/></svg>;
+const IconWave = () => <svg {...svgProps}><path d="M2 12s3-4 5-4 4 8 6 8 5-4 5-4"/><circle cx="20" cy="12" r="1"/></svg>;
+const IconLlama = () => <svg {...svgProps}><path d="M4 19V9l4-5h4l4 5v10"/><path d="M8 4v4"/><path d="M12 4v4"/><circle cx="9" cy="11" r="1"/><path d="M16 19v-6l3-2"/></svg>;
+const IconBot = () => <svg {...svgProps}><rect x="3" y="8" width="18" height="12" rx="2"/><path d="M12 8V5"/><circle cx="12" cy="3" r="2"/><circle cx="8" cy="14" r="1.5" fill={GREEN}/><circle cx="16" cy="14" r="1.5" fill={GREEN}/></svg>;
 
 /* ── Slide Components ── */
 
@@ -85,9 +96,9 @@ function Slide2() {
 
 function Slide3() {
   const steps = [
-    { icon: '🎙', title: 'Farmer Speaks', desc: 'Voice-first bond proposal via ElevenLabs' },
-    { icon: '🤖', title: 'AI Decides', desc: '8-step agent reviews risk + compliance' },
-    { icon: '💰', title: 'Community Funds', desc: 'Bond goes live on the marketplace' },
+    { icon: <IconMic />, title: 'Farmer Speaks', desc: 'Voice-first bond proposal via ElevenLabs' },
+    { icon: <IconBrain />, title: 'AI Decides', desc: '8-step agent reviews risk + compliance' },
+    { icon: <IconGraph />, title: 'Community Funds', desc: 'Bond goes live on the marketplace' },
   ];
   return (
     <div style={{ background: BG_MID, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center' }}>
@@ -98,7 +109,7 @@ function Slide3() {
         {steps.map((s, i) => (
           <React.Fragment key={i}>
             <div style={{ width: 220, padding: 28, borderRadius: 12, border: '1px solid #ffffff15', background: '#ffffff08', textAlign: 'center' }}>
-              <div style={{ fontSize: 40, marginBottom: 12 }}>{s.icon}</div>
+              <div style={{ marginBottom: 12, display: 'flex', justifyContent: 'center' }}>{s.icon}</div>
               <div style={{ fontFamily: "'Playfair Display', serif", fontSize: 20, color: '#ffffff', marginBottom: 6 }}>{s.title}</div>
               <div style={{ fontSize: 14, color: TEXT_DIM }}>{s.desc}</div>
             </div>
@@ -113,24 +124,21 @@ function Slide3() {
 
 function Slide4({ visible }) {
   const left = [
-    { n: 1, icon: '📥', label: 'Receives bond proposal' },
-    { n: 2, icon: '🌾', label: 'Fetches USDA crop data' },
-    { n: 3, icon: '⚖', label: 'Compliance check via Llama 3' },
-    { n: 4, icon: '📊', label: 'Risk scoring via AWS Bedrock' },
+    { n: 1, label: 'Receives bond proposal' },
+    { n: 2, label: 'Fetches USDA crop data' },
+    { n: 3, label: 'Compliance check via Llama 3' },
+    { n: 4, label: 'Risk scoring via AWS Bedrock' },
   ];
   const right = [
-    { n: 5, icon: '🧠', label: 'Autonomous approval decision' },
-    { n: 6, icon: '💾', label: 'Writes to DynamoDB' },
-    { n: 7, icon: '⚡', label: 'Triggers Lambda ledger' },
-    { n: 8, icon: '🔊', label: 'Voice response via ElevenLabs' },
+    { n: 5, label: 'Autonomous approval decision' },
+    { n: 6, label: 'Writes to DynamoDB' },
+    { n: 7, label: 'Triggers Lambda ledger' },
+    { n: 8, label: 'Voice response via ElevenLabs' },
   ];
   const renderStep = (s, delay) => (
-    <div key={s.n} style={{ display: 'flex', alignItems: 'center', gap: 16, marginBottom: 20, opacity: visible ? 1 : 0, transform: visible ? 'translateX(0)' : 'translateX(-20px)', transition: `all 0.4s ease ${delay}ms` }}>
-      <div style={{ width: 40, height: 40, borderRadius: '50%', background: GREEN, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 16, fontWeight: 700, color: BG_DARK, flexShrink: 0 }}>{s.n}</div>
-      <div>
-        <span style={{ fontSize: 22, marginRight: 10 }}>{s.icon}</span>
-        <span style={{ fontSize: 17, color: '#ffffff' }}>{s.label}</span>
-      </div>
+    <div key={s.n} style={{ display: 'flex', alignItems: 'center', gap: 16, marginBottom: 24, opacity: visible ? 1 : 0, transform: visible ? 'translateX(0)' : 'translateX(-20px)', transition: `all 0.4s ease ${delay}ms` }}>
+      <div style={{ width: 44, height: 44, borderRadius: '50%', background: GREEN, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 18, fontWeight: 700, color: BG_DARK, flexShrink: 0, fontFamily: "'Playfair Display', serif" }}>{s.n}</div>
+      <span style={{ fontSize: 17, color: '#ffffff' }}>{s.label}</span>
     </div>
   );
   return (
@@ -147,10 +155,10 @@ function Slide4({ visible }) {
 
 function Slide5() {
   const sponsors = [
-    { name: 'AWS', icon: '☁', desc: 'Bedrock powers our AI risk scoring. DynamoDB + Lambda handle the bond ledger and real-time updates.', detail: 'Bedrock • DynamoDB • Lambda • S3' },
-    { name: 'ElevenLabs', icon: '🎙', desc: 'Farmers submit bond proposals entirely by voice. The agent responds with spoken decisions in real time.', detail: 'STT • TTS • Voice Portfolio Management' },
-    { name: 'Featherless.AI', icon: '🦙', desc: 'Llama 3 runs structured compliance checks on every bond proposal, flagging regulatory risks before listing.', detail: 'meta-llama/Llama-3.1-8B-Instruct' },
-    { name: 'Jaseci', icon: '🤖', desc: 'The orchestration layer that runs our 8-step autonomous agent — from intake to voice response — without human intervention.', detail: 'Walker Agent • Tool Calling • Decision Logic' },
+    { name: 'AWS', icon: <IconCloud />, desc: 'Bedrock powers our AI risk scoring. DynamoDB + Lambda handle the bond ledger and real-time updates.', detail: 'Bedrock • DynamoDB • Lambda • S3' },
+    { name: 'ElevenLabs', icon: <IconWave />, desc: 'Farmers submit bond proposals entirely by voice. The agent responds with spoken decisions in real time.', detail: 'STT • TTS • Voice Portfolio Management' },
+    { name: 'Featherless.AI', icon: <IconLlama />, desc: 'Llama 3 runs structured compliance checks on every bond proposal, flagging regulatory risks before listing.', detail: 'meta-llama/Llama-3.1-8B-Instruct' },
+    { name: 'Jaseci', icon: <IconBot />, desc: 'The orchestration layer that runs our 8-step autonomous agent — from intake to voice response — without human intervention.', detail: 'Walker Agent • Tool Calling • Decision Logic' },
   ];
   return (
     <div style={{ background: BG_MID, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
@@ -160,7 +168,7 @@ function Slide5() {
         {sponsors.map((s) => (
           <div key={s.name} style={{ padding: 28, borderRadius: 12, border: '1px solid #ffffff15', background: '#ffffff08' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 12 }}>
-              <span style={{ fontSize: 28 }}>{s.icon}</span>
+              <span style={{ display: 'flex' }}>{s.icon}</span>
               <span style={{ fontFamily: "'Playfair Display', serif", fontSize: 24, color: '#ffffff' }}>{s.name}</span>
               <span style={{ marginLeft: 'auto', fontSize: 10, padding: '3px 10px', borderRadius: 999, background: `${GREEN}25`, color: GREEN, fontWeight: 600, letterSpacing: '0.05em' }}>CORE</span>
             </div>
@@ -230,8 +238,9 @@ function Slide7() {
     <div style={{ background: BG_MID, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center' }}>
       {sectionLabel('PROJECTED IMPACT AT SCALE')}
       {headline('What This Looks Like in 5 Years', 48)}
-      <div style={{ padding: '8px 20px', borderRadius: 8, background: '#f59e0b20', border: '1px solid #f59e0b40', color: '#f59e0b', fontSize: 13, marginBottom: 40 }}>
-        ⚠️ Projections based on market research — current data is from demo environment
+      <div style={{ padding: '8px 20px', borderRadius: 8, background: '#f59e0b15', border: '1px solid #f59e0b40', color: '#f59e0b', fontSize: 13, marginBottom: 40, display: 'inline-flex', alignItems: 'center', gap: 8 }}>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        Projections based on market research — current data is from demo environment
       </div>
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 24, maxWidth: 960 }}>
         {metrics.map(([num, label]) => (
