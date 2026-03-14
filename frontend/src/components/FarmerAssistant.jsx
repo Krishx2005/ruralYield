@@ -80,9 +80,9 @@ function FarmerAssistant() {
         <div
           ref={chatRef}
           style={{
-            position: 'absolute',
-            bottom: '68px',
-            right: '0',
+            position: 'fixed',
+            bottom: '88px',
+            right: '24px',
             width: '320px',
             maxHeight: '480px',
             background: 'var(--bg-elevated)',
