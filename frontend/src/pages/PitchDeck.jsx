@@ -65,10 +65,10 @@ function Slide2() {
       <div style={{ flex: '0 0 58%', position: 'relative', zIndex: 1 }}>
         {sectionLabel('THE PROBLEM')}
         {headline('Good ideas die in rural America.')}
-        {body('A farmer in Franklin County has a breakthrough corn innovation. He needs $15,000. The bank says no \u2014 too small, too risky, wrong zip code.')}
+        {body('A farmer in Franklin County has a breakthrough corn innovation. He needs $15,000. The bank says no — too small, too risky, wrong zip code.')}
         <div style={{ borderLeft: `3px solid ${GREEN}`, paddingLeft: 20, marginTop: 32 }}>
           <p style={{ fontSize: 16, color: TEXT_DIM, fontStyle: 'italic', lineHeight: 1.6, margin: 0 }}>"35% of rural small businesses cite lack of capital access as their #1 barrier to growth."</p>
-          <p style={{ fontSize: 13, color: TEXT_MUTED, marginTop: 8 }}>\u2014 USDA Rural Development Report</p>
+          <p style={{ fontSize: 13, color: TEXT_MUTED, marginTop: 8 }}>— USDA Rural Development Report</p>
         </div>
       </div>
       <div style={{ flex: '0 0 38%', display: 'flex', flexDirection: 'column', gap: 16, paddingLeft: 48 }}>
@@ -85,9 +85,9 @@ function Slide2() {
 
 function Slide3() {
   const steps = [
-    { icon: '\ud83c\udf99\ufe0f', title: 'Farmer Speaks', desc: 'Voice-first bond proposal via ElevenLabs' },
-    { icon: '\ud83e\udd16', title: 'AI Decides', desc: '8-step agent reviews risk + compliance' },
-    { icon: '\ud83d\udcb0', title: 'Community Funds', desc: 'Bond goes live on the marketplace' },
+    { icon: '🎙', title: 'Farmer Speaks', desc: 'Voice-first bond proposal via ElevenLabs' },
+    { icon: '🤖', title: 'AI Decides', desc: '8-step agent reviews risk + compliance' },
+    { icon: '💰', title: 'Community Funds', desc: 'Bond goes live on the marketplace' },
   ];
   return (
     <div style={{ background: BG_MID, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center' }}>
@@ -102,7 +102,7 @@ function Slide3() {
               <div style={{ fontFamily: "'Playfair Display', serif", fontSize: 20, color: '#ffffff', marginBottom: 6 }}>{s.title}</div>
               <div style={{ fontSize: 14, color: TEXT_DIM }}>{s.desc}</div>
             </div>
-            {i < 2 && <div style={{ fontSize: 28, color: GREEN, animation: 'pulse 2s ease-in-out infinite' }}>\u2192</div>}
+            {i < 2 && <div style={{ fontSize: 28, color: GREEN, animation: 'pulse 2s ease-in-out infinite' }}>→</div>}
           </React.Fragment>
         ))}
       </div>
@@ -113,16 +113,16 @@ function Slide3() {
 
 function Slide4({ visible }) {
   const left = [
-    { n: 1, icon: '\ud83d\udce5', label: 'Receives bond proposal' },
-    { n: 2, icon: '\ud83c\udf3e', label: 'Fetches USDA crop data' },
-    { n: 3, icon: '\u2696\ufe0f', label: 'Compliance check via Llama 3' },
-    { n: 4, icon: '\ud83d\udcca', label: 'Risk scoring via AWS Bedrock' },
+    { n: 1, icon: '📥', label: 'Receives bond proposal' },
+    { n: 2, icon: '🌾', label: 'Fetches USDA crop data' },
+    { n: 3, icon: '⚖', label: 'Compliance check via Llama 3' },
+    { n: 4, icon: '📊', label: 'Risk scoring via AWS Bedrock' },
   ];
   const right = [
-    { n: 5, icon: '\ud83e\udde0', label: 'Autonomous approval decision' },
-    { n: 6, icon: '\ud83d\udcbe', label: 'Writes to DynamoDB' },
-    { n: 7, icon: '\u26a1', label: 'Triggers Lambda ledger' },
-    { n: 8, icon: '\ud83d\udd0a', label: 'Voice response via ElevenLabs' },
+    { n: 5, icon: '🧠', label: 'Autonomous approval decision' },
+    { n: 6, icon: '💾', label: 'Writes to DynamoDB' },
+    { n: 7, icon: '⚡', label: 'Triggers Lambda ledger' },
+    { n: 8, icon: '🔊', label: 'Voice response via ElevenLabs' },
   ];
   const renderStep = (s, delay) => (
     <div key={s.n} style={{ display: 'flex', alignItems: 'center', gap: 16, marginBottom: 20, opacity: visible ? 1 : 0, transform: visible ? 'translateX(0)' : 'translateX(-20px)', transition: `all 0.4s ease ${delay}ms` }}>
@@ -147,10 +147,10 @@ function Slide4({ visible }) {
 
 function Slide5() {
   const sponsors = [
-    { name: 'AWS', icon: '\u2601\ufe0f', desc: 'Bedrock powers our AI risk scoring. DynamoDB + Lambda handle the bond ledger and real-time updates.', detail: 'Bedrock \u2022 DynamoDB \u2022 Lambda \u2022 S3' },
-    { name: 'ElevenLabs', icon: '\ud83c\udf99\ufe0f', desc: 'Farmers submit bond proposals entirely by voice. The agent responds with spoken decisions in real time.', detail: 'STT \u2022 TTS \u2022 Voice Portfolio Management' },
-    { name: 'Featherless.AI', icon: '\ud83e\udd99', desc: 'Llama 3 runs structured compliance checks on every bond proposal, flagging regulatory risks before listing.', detail: 'meta-llama/Llama-3.1-8B-Instruct' },
-    { name: 'Jaseci', icon: '\ud83e\udd16', desc: 'The orchestration layer that runs our 8-step autonomous agent \u2014 from intake to voice response \u2014 without human intervention.', detail: 'Walker Agent \u2022 Tool Calling \u2022 Decision Logic' },
+    { name: 'AWS', icon: '☁', desc: 'Bedrock powers our AI risk scoring. DynamoDB + Lambda handle the bond ledger and real-time updates.', detail: 'Bedrock • DynamoDB • Lambda • S3' },
+    { name: 'ElevenLabs', icon: '🎙', desc: 'Farmers submit bond proposals entirely by voice. The agent responds with spoken decisions in real time.', detail: 'STT • TTS • Voice Portfolio Management' },
+    { name: 'Featherless.AI', icon: '🦙', desc: 'Llama 3 runs structured compliance checks on every bond proposal, flagging regulatory risks before listing.', detail: 'meta-llama/Llama-3.1-8B-Instruct' },
+    { name: 'Jaseci', icon: '🤖', desc: 'The orchestration layer that runs our 8-step autonomous agent — from intake to voice response — without human intervention.', detail: 'Walker Agent • Tool Calling • Decision Logic' },
   ];
   return (
     <div style={{ background: BG_MID, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
@@ -175,20 +175,50 @@ function Slide5() {
 
 function Slide6() {
   return (
-    <div style={{ background: BG_DARK, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center', position: 'relative' }}>
+    <div style={{ background: BG_DARK, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center' }}>
       {sectionLabel('LIVE DEMO')}
       {headline('Watch the Agent Work.')}
-      <div style={{ position: 'relative', marginTop: 20, marginBottom: 32 }}>
-        <div style={{ position: 'absolute', inset: -20, borderRadius: '50%', background: GREEN, opacity: 0.08, animation: 'pulse 2s ease-in-out infinite' }} />
-        <Link to="/farmer" target="_blank" rel="noopener noreferrer" style={{ position: 'relative', display: 'inline-flex', alignItems: 'center', gap: 8, padding: '16px 40px', borderRadius: 10, background: GREEN, color: BG_DARK, fontSize: 18, fontWeight: 700, textDecoration: 'none', fontFamily: "'Source Sans 3', sans-serif", letterSpacing: '0.03em' }}>
-          Open Farmer Dashboard \u2192
+
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 20, marginTop: 32, width: '100%', maxWidth: 400 }}>
+        {/* Primary CTA with pulse ring */}
+        <div style={{ position: 'relative', width: '100%' }}>
+          <div style={{ position: 'absolute', inset: -12, borderRadius: 14, background: GREEN, opacity: 0.06, animation: 'pulse 2s ease-in-out infinite' }} />
+          <Link
+            to="/farmer"
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={(e) => e.stopPropagation()}
+            style={{
+              position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10,
+              width: '100%', padding: '18px 32px', borderRadius: 10,
+              background: GREEN, color: BG_DARK, fontSize: 18, fontWeight: 700,
+              textDecoration: 'none', fontFamily: "'Source Sans 3', sans-serif", letterSpacing: '0.03em',
+            }}
+          >
+            Open Farmer Dashboard →
+          </Link>
+        </div>
+
+        {/* Secondary CTA */}
+        <Link
+          to="/investor"
+          target="_blank"
+          rel="noopener noreferrer"
+          onClick={(e) => e.stopPropagation()}
+          style={{
+            display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10,
+            width: '100%', padding: '14px 32px', borderRadius: 10,
+            border: `1.5px solid ${GREEN}`, color: GREEN, fontSize: 15, fontWeight: 600,
+            textDecoration: 'none', fontFamily: "'Source Sans 3', sans-serif", background: 'transparent',
+          }}
+        >
+          Open Investor View →
         </Link>
       </div>
-      <Link to="/investor" target="_blank" rel="noopener noreferrer" style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '12px 32px', borderRadius: 10, border: `1.5px solid ${GREEN}`, color: GREEN, fontSize: 15, fontWeight: 600, textDecoration: 'none', fontFamily: "'Source Sans 3', sans-serif" }}>
-        Open Investor View \u2192
-      </Link>
-      <p style={{ position: 'absolute', bottom: 48, fontSize: 14, color: TEXT_MUTED, maxWidth: 600 }}>
-        1. Speak bond proposal \u2192 2. Watch 8 steps \u2192 3. Switch to investor \u2192 4. Click Invest
+
+      {/* Demo script */}
+      <p style={{ marginTop: 56, fontSize: 14, color: TEXT_MUTED, maxWidth: 560, lineHeight: 1.6 }}>
+        1. Speak bond proposal → 2. Watch 8 steps → 3. Switch to investor → 4. Click Invest
       </p>
     </div>
   );
@@ -201,7 +231,7 @@ function Slide7() {
       {sectionLabel('PROJECTED IMPACT AT SCALE')}
       {headline('What This Looks Like in 5 Years', 48)}
       <div style={{ padding: '8px 20px', borderRadius: 8, background: '#f59e0b20', border: '1px solid #f59e0b40', color: '#f59e0b', fontSize: 13, marginBottom: 40 }}>
-        \u26a0\ufe0f Projections based on market research \u2014 current data is from demo environment
+        ⚠️ Projections based on market research — current data is from demo environment
       </div>
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 24, maxWidth: 960 }}>
         {metrics.map(([num, label]) => (
