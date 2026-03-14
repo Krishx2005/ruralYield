@@ -239,7 +239,7 @@ function InvestorProfile() {
                     >
                       <td style={{ padding: '12px 16px 12px 0' }}>
                         <Link
-                          to={`/bonds/${p.bond_id}`}
+                          to={`/bond/${p.bond_id}`}
                           style={{ fontWeight: 500, color: 'var(--text-primary)', textDecoration: 'none' }}
                         >
                           {p.bond_title}

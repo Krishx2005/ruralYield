@@ -363,7 +363,7 @@ function BondCard({ bond, showInvest = false, onInvested }) {
         </button>
 
         <Link
-          to={`/bonds/${bond.id}`}
+          to={`/bond/${bond.bond_id || bond.id}`}
           className="btn-secondary !px-3 !py-2 !text-xs !rounded-lg !h-auto"
         >
           <Eye className="h-3.5 w-3.5" />
