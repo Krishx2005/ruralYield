@@ -81,7 +81,7 @@ function InvestorDashboard() {
       getWatchlist(investorId).then((res) => setWatchlistBonds(res.bonds || [])).catch(() => {});
     }
     // Safety timeout: force loading to false after 10 seconds
-    const timeout = setTimeout(() => setLoading(false), 10000);
+    const timeout = setTimeout(() => setLoading(false), 5000);
     return () => clearTimeout(timeout);
   }, [fetchBonds]);
 

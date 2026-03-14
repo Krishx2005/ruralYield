@@ -65,8 +65,11 @@ function BondDetail() {
       setError('');
       try {
         const data = await getBond(id);
-        setBond(data);
+        const bondData = data.bond || data;
+        console.log('Bond fetched:', bondData);
+        setBond(bondData);
       } catch (err) {
+        console.error('Bond fetch error:', err);
         setError(
           err.response?.data?.detail || 'Failed to load bond details.'
         );
@@ -75,6 +78,8 @@ function BondDetail() {
       }
     }
     fetchBond();
+    const timeout = setTimeout(() => setLoading(false), 5000);
+    return () => clearTimeout(timeout);
   }, [id]);
 
   const handleReadAloud = async () => {
