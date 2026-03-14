@@ -133,7 +133,7 @@ function BondCard({ bond, showInvest = false, onInvested }) {
     try {
       const investorId = localStorage.getItem('investor_id') || 'anonymous';
       const investorName = localStorage.getItem('investor_name') || 'Anonymous';
-      await investInBond(bond.id, {
+      await investInBond(bond.bond_id || bond.id, {
         investor_id: investorId,
         investor_name: investorName,
         amount: parseFloat(investAmount),

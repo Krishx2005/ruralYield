@@ -63,8 +63,11 @@ function InvestorDashboard() {
     setError('');
     try {
       const data = await getBonds();
-      setBonds(Array.isArray(data) ? data : data.bonds || []);
-    } catch {
+      const bondsList = Array.isArray(data) ? data : (data.bonds || data.data || []);
+      console.log('Bonds fetched:', bondsList);
+      setBonds(bondsList);
+    } catch (err) {
+      console.error('Bond fetch error:', err);
       setError('Failed to load bonds. Please try again.');
     } finally {
       setLoading(false);
@@ -77,6 +80,9 @@ function InvestorDashboard() {
     if (investorId) {
       getWatchlist(investorId).then((res) => setWatchlistBonds(res.bonds || [])).catch(() => {});
     }
+    // Safety timeout: force loading to false after 10 seconds
+    const timeout = setTimeout(() => setLoading(false), 10000);
+    return () => clearTimeout(timeout);
   }, [fetchBonds]);
 
   useEffect(() => {
@@ -612,8 +618,9 @@ function InvestorDashboard() {
           <div style={{ display: 'grid', gap: 16, gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', marginBottom: 40 }}>
             {filteredBonds.map((bond, i) => (
               <div
-                key={bond.id || bond.bond_id || i}
-                style={{ animation: 'fadeUp 0.4s ease forwards', animationDelay: `${i * 100}ms` }}
+                key={bond.bond_id || bond.id || i}
+                className="animate-fade-up"
+                style={{ animationDelay: `${i * 80}ms` }}
               >
                 <BondCard
                   bond={bond}
