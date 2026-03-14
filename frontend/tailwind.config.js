@@ -5,7 +5,7 @@ export default {
     extend: {
       fontFamily: {
         display: ['"Playfair Display"', 'serif'],
-        sans: ['"Source Sans 3"', 'system-ui', 'sans-serif'],
+        sans: ['"Nunito"', 'system-ui', 'sans-serif'],
         mono: ['"JetBrains Mono"', 'monospace'],
       },
     },
