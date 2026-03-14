@@ -45,6 +45,27 @@ const IconWave = () => <svg {...svgProps}><path d="M2 12s3-4 5-4 4 8 6 8 5-4 5-4
 const IconLlama = () => <svg {...svgProps}><path d="M4 19V9l4-5h4l4 5v10"/><path d="M8 4v4"/><path d="M12 4v4"/><circle cx="9" cy="11" r="1"/><path d="M16 19v-6l3-2"/></svg>;
 const IconBot = () => <svg {...svgProps}><rect x="3" y="8" width="18" height="12" rx="2"/><path d="M12 8V5"/><circle cx="12" cy="3" r="2"/><circle cx="8" cy="14" r="1.5" fill={GREEN}/><circle cx="16" cy="14" r="1.5" fill={GREEN}/></svg>;
 
+/* ── Tooltip ── */
+function Tooltip({ text, visible }) {
+  return (
+    <div style={{
+      position: 'absolute', bottom: '100%', left: '50%', transform: `translateX(-50%) translateY(${visible ? '-8px' : '-4px'})`,
+      opacity: visible ? 1 : 0, pointerEvents: 'none', zIndex: 100,
+      background: '#1a3a1a', border: `1px solid ${GREEN}`, borderRadius: 8,
+      padding: '10px 14px', maxWidth: 220, fontSize: 13, color: '#ffffff',
+      fontFamily: "'Source Sans 3', sans-serif", lineHeight: 1.5, textAlign: 'center',
+      transition: 'opacity 200ms ease, transform 200ms ease', whiteSpace: 'normal',
+    }}>
+      {text}
+      <div style={{
+        position: 'absolute', top: '100%', left: '50%', transform: 'translateX(-50%)',
+        width: 0, height: 0, borderLeft: '6px solid transparent', borderRight: '6px solid transparent',
+        borderTop: `6px solid ${GREEN}`,
+      }} />
+    </div>
+  );
+}
+
 /* ── Slide Components ── */
 
 function Slide1() {
@@ -123,6 +144,17 @@ function Slide3() {
 }
 
 function Slide4({ visible }) {
+  const [hovered, setHovered] = useState(null);
+  const STEP_TIPS = {
+    1: "Receives farmer's voice proposal",
+    2: "Pulls real USDA crop yield data for the county",
+    3: "Llama 3 via Featherless.AI checks regulatory compliance",
+    4: "AWS Bedrock scores investment risk 0-100",
+    5: "Agent autonomously approves, requests info, or rejects",
+    6: "Bond record written to AWS DynamoDB",
+    7: "AWS Lambda triggers ledger entry",
+    8: "ElevenLabs speaks decision back to farmer",
+  };
   const left = [
     { n: 1, label: 'Receives bond proposal' },
     { n: 2, label: 'Fetches USDA crop data' },
@@ -136,7 +168,13 @@ function Slide4({ visible }) {
     { n: 8, label: 'Voice response via ElevenLabs' },
   ];
   const renderStep = (s, delay) => (
-    <div key={s.n} style={{ display: 'flex', alignItems: 'center', gap: 16, marginBottom: 24, opacity: visible ? 1 : 0, transform: visible ? 'translateX(0)' : 'translateX(-20px)', transition: `all 0.4s ease ${delay}ms` }}>
+    <div
+      key={s.n}
+      style={{ display: 'flex', alignItems: 'center', gap: 16, marginBottom: 24, opacity: visible ? 1 : 0, transform: visible ? 'translateX(0)' : 'translateX(-20px)', transition: `all 0.4s ease ${delay}ms`, position: 'relative', cursor: 'default' }}
+      onMouseEnter={() => setHovered(s.n)}
+      onMouseLeave={() => setHovered(null)}
+    >
+      <Tooltip text={STEP_TIPS[s.n]} visible={hovered === s.n} />
       <div style={{ width: 44, height: 44, borderRadius: '50%', background: GREEN, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 18, fontWeight: 700, color: BG_DARK, flexShrink: 0, fontFamily: "'Playfair Display', serif" }}>{s.n}</div>
       <span style={{ fontSize: 17, color: '#ffffff' }}>{s.label}</span>
     </div>
@@ -154,6 +192,13 @@ function Slide4({ visible }) {
 }
 
 function Slide5() {
+  const [hovered, setHovered] = useState(null);
+  const SPONSOR_TIPS = {
+    AWS: '4 services integrated — Bedrock, DynamoDB, Lambda, S3',
+    ElevenLabs: 'Voice-first UX — farmers never need to type',
+    'Featherless.AI': 'Open-weight model — transparent + cost effective',
+    Jaseci: '8-step walker agent — fully auditable decision trail',
+  };
   const sponsors = [
     { name: 'AWS', icon: <IconCloud />, desc: 'Bedrock powers our AI risk scoring. DynamoDB + Lambda handle the bond ledger and real-time updates.', detail: 'Bedrock • DynamoDB • Lambda • S3' },
     { name: 'ElevenLabs', icon: <IconWave />, desc: 'Farmers submit bond proposals entirely by voice. The agent responds with spoken decisions in real time.', detail: 'STT • TTS • Voice Portfolio Management' },
@@ -166,7 +211,13 @@ function Slide5() {
       {headline('Built on Best-in-Class Infrastructure', 44)}
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20, maxWidth: 900, marginTop: 20 }}>
         {sponsors.map((s) => (
-          <div key={s.name} style={{ padding: 28, borderRadius: 12, border: '1px solid #ffffff15', background: '#ffffff08' }}>
+          <div
+            key={s.name}
+            style={{ padding: 28, borderRadius: 12, border: '1px solid #ffffff15', background: '#ffffff08', position: 'relative', cursor: 'default' }}
+            onMouseEnter={() => setHovered(s.name)}
+            onMouseLeave={() => setHovered(null)}
+          >
+            <Tooltip text={SPONSOR_TIPS[s.name]} visible={hovered === s.name} />
             <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 12 }}>
               <span style={{ display: 'flex' }}>{s.icon}</span>
               <span style={{ fontFamily: "'Playfair Display', serif", fontSize: 24, color: '#ffffff' }}>{s.name}</span>
@@ -233,6 +284,13 @@ function Slide6() {
 }
 
 function Slide7() {
+  const [hovered, setHovered] = useState(null);
+  const METRIC_TIPS = {
+    '$50M': 'Based on 1% penetration of Ohio rural financing gap',
+    '10,000': 'Estimated addressable farmers in Ohio alone',
+    '250,000': 'Average 25 acres per funded innovation',
+    '500,000': '5 investors per bond on average',
+  };
   const metrics = [['$50M', 'Rural capital deployed annually'], ['10,000', 'Farmers funded across Ohio'], ['250,000', 'Acres of innovation funded'], ['500,000', 'Community investors engaged']];
   return (
     <div style={{ background: BG_MID, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center' }}>
@@ -244,7 +302,13 @@ function Slide7() {
       </div>
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 24, maxWidth: 960 }}>
         {metrics.map(([num, label]) => (
-          <div key={num}>
+          <div
+            key={num}
+            style={{ position: 'relative', cursor: 'default' }}
+            onMouseEnter={() => setHovered(num)}
+            onMouseLeave={() => setHovered(null)}
+          >
+            <Tooltip text={METRIC_TIPS[num]} visible={hovered === num} />
             <div style={{ fontFamily: "'Playfair Display', serif", fontSize: 48, color: GREEN, fontWeight: 700 }}>{num}</div>
             <div style={{ fontSize: 15, color: '#ffffff', marginTop: 8 }}>{label}</div>
           </div>
