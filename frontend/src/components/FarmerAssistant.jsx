@@ -1,29 +1,19 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { chatWithAssistant } from '../api';
 
-const PROMPT_CHIPS = [
-  'Help me write a bond description',
-  'What crop should I grow this season?',
-  'How do I set a fair bond amount?',
-  'Explain risk scores to me',
-  'Tips for getting funded faster',
+const prompts = [
+  "Help me describe my innovation",
+  "What should I include in my bond proposal?",
+  "How do I set a realistic funding goal?",
+  "What makes investors trust a farmer?",
 ];
 
 function FarmerAssistant() {
   const [chatOpen, setChatOpen] = useState(false);
   const [chatMinimized, setChatMinimized] = useState(false);
-  const [messages, setMessages] = useState([
-    { role: 'assistant', content: "Hi! I'm your Bond Writing Assistant. I can help you craft bond proposals, understand risk scores, or answer questions about the platform. What can I help with?" },
-  ]);
+  const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
-  const [sending, setSending] = useState(false);
+  const [loading, setLoading] = useState(false);
   const chatRef = useRef(null);
-  const messagesEndRef = useRef(null);
-
-  // Auto-scroll to bottom on new messages
-  useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages]);
 
   // ESC key handler
   useEffect(() => {
@@ -50,209 +40,285 @@ function FarmerAssistant() {
   }, [chatOpen]);
 
   const sendMessage = async (text) => {
-    if (!text.trim()) return;
-    const userMsg = { role: 'user', content: text.trim() };
-    const updated = [...messages, userMsg];
-    setMessages(updated);
+    const userMsg = { role: 'user', content: text };
+    setMessages((prev) => [...prev, userMsg]);
     setInput('');
-    setSending(true);
+    setLoading(true);
     try {
-      const res = await chatWithAssistant(updated);
-      const reply = res.response || res.reply || res.message || res.content || 'Sorry, I could not generate a response.';
-      setMessages([...updated, { role: 'assistant', content: reply }]);
+      const res = await fetch(
+        `${import.meta.env.VITE_API_URL || 'http://localhost:8000'}/api/assistant/chat`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ messages: [...messages, userMsg] }),
+        }
+      );
+      const data = await res.json();
+      setMessages((prev) => [
+        ...prev,
+        {
+          role: 'assistant',
+          content: data.response || data.message || 'Sorry, I could not respond.',
+        },
+      ]);
     } catch {
-      setMessages([...updated, { role: 'assistant', content: 'Sorry, something went wrong. Please try again.' }]);
-    } finally {
-      setSending(false);
+      setMessages((prev) => [
+        ...prev,
+        {
+          role: 'assistant',
+          content: 'I am having trouble connecting. Please try again.',
+        },
+      ]);
     }
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    sendMessage(input);
+    setLoading(false);
   };
 
   return (
-    <>
-      {/* Float button */}
-      <div style={{ position: 'fixed', bottom: '24px', right: '24px', zIndex: 50 }}>
-        <button
-          onClick={() => { setChatOpen(!chatOpen); if (!chatOpen) setChatMinimized(false); }}
-          style={{
-            width: '56px',
-            height: '56px',
-            borderRadius: '50%',
-            background: 'var(--accent-green)',
-            border: 'none',
-            cursor: 'pointer',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            boxShadow: 'var(--shadow-lg)',
-            color: 'white',
-            fontSize: '24px',
-            transition: 'transform 200ms ease',
-          }}
-          onMouseEnter={(e) => (e.currentTarget.style.transform = 'scale(1.1)')}
-          onMouseLeave={(e) => (e.currentTarget.style.transform = 'scale(1)')}
-        >
-          {chatOpen ? '\u2715' : '\ud83d\udcac'}
-        </button>
-      </div>
-
-      {/* Chat panel */}
+    <div style={{ position: 'fixed', bottom: '24px', right: '24px', zIndex: 999 }}>
+      {/* Chat Panel */}
       {chatOpen && (
         <div
           ref={chatRef}
           style={{
-            position: 'fixed',
-            bottom: '88px',
-            right: '24px',
+            position: 'absolute',
+            bottom: '68px',
+            right: '0',
             width: '320px',
-            maxHeight: chatMinimized ? '56px' : 'calc(100vh - 120px)',
+            maxHeight: '480px',
             background: 'var(--bg-elevated)',
             border: '1px solid var(--border)',
             borderRadius: '18px',
             boxShadow: 'var(--shadow-lg)',
-            zIndex: 50,
             display: 'flex',
             flexDirection: 'column',
             overflow: 'hidden',
-            transition: 'max-height 300ms ease',
           }}
         >
           {/* Header */}
-          <div style={{
-            padding: '16px 20px',
-            borderBottom: chatMinimized ? 'none' : '1px solid var(--border)',
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            flexShrink: 0,
-          }}>
-            <span style={{ fontWeight: 700, color: 'var(--text-primary)', fontSize: 14 }}>
+          <div
+            style={{
+              padding: '14px 16px',
+              borderBottom: '1px solid var(--border)',
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              background: 'var(--bg-card)',
+            }}
+          >
+            <span
+              style={{
+                fontWeight: 700,
+                fontSize: '14px',
+                color: 'var(--text-primary)',
+                fontFamily: 'Nunito, sans-serif',
+              }}
+            >
               Bond Writing Assistant
             </span>
-            <div style={{ display: 'flex', gap: '8px' }}>
+            <div style={{ display: 'flex', gap: '4px' }}>
               <button
-                onClick={() => setChatMinimized(!chatMinimized)}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setChatMinimized(!chatMinimized);
+                }}
                 style={{
-                  background: 'none', border: 'none',
-                  cursor: 'pointer', color: 'var(--text-muted)',
-                  fontSize: '18px', padding: '0 4px', lineHeight: 1,
+                  background: 'none',
+                  border: 'none',
+                  cursor: 'pointer',
+                  color: 'var(--text-muted)',
+                  fontSize: '16px',
+                  padding: '2px 6px',
+                  borderRadius: '4px',
+                  lineHeight: 1,
                 }}
               >
-                {chatMinimized ? '+' : '\u2014'}
+                —
               </button>
               <button
-                onClick={() => setChatOpen(false)}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setChatOpen(false);
+                }}
                 style={{
-                  background: 'none', border: 'none',
-                  cursor: 'pointer', color: 'var(--text-muted)',
-                  fontSize: '18px', padding: '0 4px', lineHeight: 1,
+                  background: 'none',
+                  border: 'none',
+                  cursor: 'pointer',
+                  color: 'var(--text-muted)',
+                  fontSize: '16px',
+                  padding: '2px 6px',
+                  borderRadius: '4px',
+                  lineHeight: 1,
                 }}
               >
-                \u2715
+                ✕
               </button>
             </div>
           </div>
 
-          {/* Body - hidden when minimized */}
+          {/* Body */}
           {!chatMinimized && (
             <>
-              {/* Messages area */}
-              <div style={{
-                flex: 1, overflowY: 'auto', padding: '16px',
-                display: 'flex', flexDirection: 'column', gap: 8, minHeight: 0,
-              }}>
-                {/* Prompt chips at top */}
-                {messages.length <= 1 && (
-                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginBottom: 8 }}>
-                    {PROMPT_CHIPS.map((chip) => (
-                      <button
-                        key={chip}
-                        onClick={() => sendMessage(chip)}
-                        disabled={sending}
-                        style={{
-                          fontSize: 11, padding: '5px 10px', borderRadius: 16,
-                          border: '1px solid var(--border)',
-                          backgroundColor: 'var(--bg-glass, var(--bg-secondary))',
-                          color: 'var(--text-secondary)', cursor: 'pointer',
-                        }}
-                      >
-                        {chip}
-                      </button>
-                    ))}
+              {/* Messages */}
+              <div
+                style={{
+                  flex: 1,
+                  overflowY: 'auto',
+                  padding: '12px',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '8px',
+                  maxHeight: '280px',
+                }}
+              >
+                {messages.length === 0 && (
+                  <div style={{ padding: '8px 0' }}>
+                    <p
+                      style={{
+                        fontSize: '13px',
+                        color: 'var(--text-muted)',
+                        marginBottom: '10px',
+                        fontFamily: 'Nunito, sans-serif',
+                      }}
+                    >
+                      Hi! I can help you write a compelling bond proposal.
+                    </p>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                      {prompts.map((p, i) => (
+                        <button
+                          key={i}
+                          onClick={() => sendMessage(p)}
+                          style={{
+                            background: 'var(--accent-green-dim)',
+                            border: '1px solid var(--border)',
+                            borderRadius: '8px',
+                            padding: '8px 10px',
+                            fontSize: '12px',
+                            color: 'var(--accent-green)',
+                            cursor: 'pointer',
+                            textAlign: 'left',
+                            fontFamily: 'Nunito, sans-serif',
+                            fontWeight: 600,
+                          }}
+                        >
+                          {p}
+                        </button>
+                      ))}
+                    </div>
                   </div>
                 )}
-
-                {messages.map((msg, i) => (
+                {messages.map((m, i) => (
                   <div
                     key={i}
                     style={{
-                      alignSelf: msg.role === 'user' ? 'flex-end' : 'flex-start',
-                      maxWidth: '85%', padding: '8px 12px',
-                      borderRadius: msg.role === 'user' ? '12px 12px 2px 12px' : '12px 12px 12px 2px',
-                      backgroundColor: msg.role === 'user' ? 'var(--accent-green)' : 'var(--bg-glass, var(--bg-card))',
-                      color: msg.role === 'user' ? '#ffffff' : 'var(--text-primary)',
-                      fontSize: 13, lineHeight: 1.5, whiteSpace: 'pre-wrap',
+                      alignSelf: m.role === 'user' ? 'flex-end' : 'flex-start',
+                      background:
+                        m.role === 'user' ? 'var(--accent-green)' : 'var(--bg-card)',
+                      color: m.role === 'user' ? 'white' : 'var(--text-primary)',
+                      padding: '8px 12px',
+                      borderRadius: '12px',
+                      fontSize: '13px',
+                      maxWidth: '85%',
+                      fontFamily: 'Nunito, sans-serif',
+                      border:
+                        m.role === 'assistant' ? '1px solid var(--border)' : 'none',
+                      lineHeight: 1.5,
+                      whiteSpace: 'pre-wrap',
                     }}
                   >
-                    {msg.content}
+                    {m.content}
                   </div>
                 ))}
-                {sending && (
-                  <div style={{
-                    alignSelf: 'flex-start', padding: '8px 12px',
-                    borderRadius: '12px 12px 12px 2px',
-                    backgroundColor: 'var(--bg-glass, var(--bg-card))',
-                    color: 'var(--text-muted)', fontSize: 13,
-                  }}>
+                {loading && (
+                  <div
+                    style={{
+                      alignSelf: 'flex-start',
+                      background: 'var(--bg-card)',
+                      border: '1px solid var(--border)',
+                      padding: '8px 12px',
+                      borderRadius: '12px',
+                      fontSize: '13px',
+                      color: 'var(--text-muted)',
+                    }}
+                  >
                     Thinking...
                   </div>
                 )}
-                <div ref={messagesEndRef} />
               </div>
 
-              {/* Input form */}
-              <form
-                onSubmit={handleSubmit}
+              {/* Input */}
+              <div
                 style={{
-                  display: 'flex', gap: 8, padding: '12px 16px',
-                  borderTop: '1px solid var(--border)', flexShrink: 0,
+                  padding: '10px 12px',
+                  borderTop: '1px solid var(--border)',
+                  display: 'flex',
+                  gap: '8px',
                 }}
               >
                 <input
-                  type="text"
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
-                  placeholder="Type a message..."
-                  disabled={sending}
+                  onKeyDown={(e) =>
+                    e.key === 'Enter' && input.trim() && sendMessage(input.trim())
+                  }
+                  placeholder="Ask anything..."
                   style={{
-                    flex: 1, padding: '8px 12px',
-                    border: '1px solid var(--border)', borderRadius: 10,
-                    fontSize: 13, outline: 'none',
-                    backgroundColor: 'var(--bg-card)', color: 'var(--text-primary)',
+                    flex: 1,
+                    padding: '8px 12px',
+                    border: '1px solid var(--border)',
+                    borderRadius: '999px',
+                    fontSize: '13px',
+                    background: 'var(--bg-primary)',
+                    color: 'var(--text-primary)',
+                    fontFamily: 'Nunito, sans-serif',
+                    outline: 'none',
                   }}
                 />
                 <button
-                  type="submit"
-                  disabled={sending || !input.trim()}
+                  onClick={() => input.trim() && sendMessage(input.trim())}
                   style={{
-                    padding: '8px 16px', backgroundColor: 'var(--accent-green)',
-                    color: '#ffffff', border: 'none', borderRadius: 10,
-                    cursor: 'pointer', fontSize: 13, fontWeight: 700,
-                    opacity: sending || !input.trim() ? 0.5 : 1,
+                    background: 'var(--accent-green)',
+                    border: 'none',
+                    borderRadius: '999px',
+                    padding: '8px 14px',
+                    cursor: 'pointer',
+                    color: 'white',
+                    fontSize: '13px',
+                    fontWeight: 700,
+                    fontFamily: 'Nunito, sans-serif',
                   }}
                 >
                   Send
                 </button>
-              </form>
+              </div>
             </>
           )}
         </div>
       )}
-    </>
+
+      {/* Float Button */}
+      <button
+        onClick={() => setChatOpen(!chatOpen)}
+        style={{
+          width: '52px',
+          height: '52px',
+          borderRadius: '50%',
+          background: 'var(--accent-green)',
+          border: 'none',
+          cursor: 'pointer',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          boxShadow: 'var(--shadow-lg)',
+          color: 'white',
+          fontSize: '20px',
+          transition: 'transform 200ms ease',
+        }}
+        onMouseEnter={(e) => (e.currentTarget.style.transform = 'scale(1.1)')}
+        onMouseLeave={(e) => (e.currentTarget.style.transform = 'scale(1)')}
+      >
+        {chatOpen ? '✕' : '💬'}
+      </button>
+    </div>
   );
 }
 

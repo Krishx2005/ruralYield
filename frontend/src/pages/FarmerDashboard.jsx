@@ -11,6 +11,7 @@ import VoiceRecorder from '../components/VoiceRecorder';
 import AgentSteps, { AGENT_STEPS } from '../components/AgentSteps';
 import BondCard from '../components/BondCard';
 import BondTimeline from '../components/BondTimeline';
+import FarmerAssistant from '../components/FarmerAssistant';
 import { createBond, getBonds, synthesizeSpeech } from '../api';
 
 const CROP_TYPES = ['CORN', 'SOYBEANS', 'WHEAT', 'RICE'];
@@ -808,6 +809,7 @@ function FarmerDashboard() {
         )}
         </div>
       </div>
+      <FarmerAssistant />
     </div>
   );
 }
