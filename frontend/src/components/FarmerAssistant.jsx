@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect, useCallback } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { chatWithAssistant } from '../api';
 
 const PROMPT_CHIPS = [
@@ -10,47 +10,44 @@ const PROMPT_CHIPS = [
 ];
 
 function FarmerAssistant() {
-  const [open, setOpen] = useState(false);
-  const [minimized, setMinimized] = useState(false);
+  const [chatOpen, setChatOpen] = useState(false);
+  const [chatMinimized, setChatMinimized] = useState(false);
   const [messages, setMessages] = useState([
     { role: 'assistant', content: "Hi! I'm your Bond Writing Assistant. I can help you craft bond proposals, understand risk scores, or answer questions about the platform. What can I help with?" },
   ]);
   const [input, setInput] = useState('');
   const [sending, setSending] = useState(false);
+  const chatRef = useRef(null);
   const messagesEndRef = useRef(null);
-  const panelRef = useRef(null);
 
+  // Auto-scroll to bottom on new messages
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
-  // ESC key to close
+  // ESC key handler
   useEffect(() => {
-    if (!open) return;
-    const handleKey = (e) => {
-      if (e.key === 'Escape') setOpen(false);
+    const handleEsc = (e) => {
+      if (e.key === 'Escape') setChatOpen(false);
     };
-    window.addEventListener('keydown', handleKey);
-    return () => window.removeEventListener('keydown', handleKey);
-  }, [open]);
+    window.addEventListener('keydown', handleEsc);
+    return () => window.removeEventListener('keydown', handleEsc);
+  }, []);
 
-  // Click outside to close
+  // Click outside handler
   useEffect(() => {
-    if (!open) return;
-    const handleClick = (e) => {
-      if (panelRef.current && !panelRef.current.contains(e.target)) {
-        setOpen(false);
+    const handleClickOutside = (e) => {
+      if (chatRef.current && !chatRef.current.contains(e.target)) {
+        setChatOpen(false);
       }
     };
-    // Delay to avoid closing immediately on the open click
-    const timer = setTimeout(() => {
-      document.addEventListener('mousedown', handleClick);
-    }, 100);
-    return () => {
-      clearTimeout(timer);
-      document.removeEventListener('mousedown', handleClick);
-    };
-  }, [open]);
+    if (chatOpen) {
+      setTimeout(() => {
+        document.addEventListener('mousedown', handleClickOutside);
+      }, 100);
+    }
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [chatOpen]);
 
   const sendMessage = async (text) => {
     if (!text.trim()) return;
@@ -75,137 +72,100 @@ function FarmerAssistant() {
     sendMessage(input);
   };
 
-  const toggleOpen = useCallback(() => {
-    if (open) {
-      setOpen(false);
-    } else {
-      setOpen(true);
-      setMinimized(false);
-    }
-  }, [open]);
-
   return (
     <>
-      {/* Floating toggle button — always visible */}
-      <button
-        onClick={toggleOpen}
-        style={{
-          position: 'fixed',
-          bottom: 24,
-          right: 24,
-          width: 56,
-          height: 56,
-          borderRadius: '50%',
-          backgroundColor: 'var(--accent-green)',
-          color: '#ffffff',
-          border: 'none',
-          cursor: 'pointer',
-          boxShadow: '0 4px 16px rgba(0,0,0,0.2)',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          zIndex: 50,
-          transition: 'transform 200ms ease, box-shadow 200ms ease',
-        }}
-        onMouseEnter={(e) => { e.currentTarget.style.transform = 'scale(1.1)'; e.currentTarget.style.boxShadow = '0 6px 24px rgba(0,0,0,0.25)'; }}
-        onMouseLeave={(e) => { e.currentTarget.style.transform = 'scale(1)'; e.currentTarget.style.boxShadow = '0 4px 16px rgba(0,0,0,0.2)'; }}
-      >
-        {open ? (
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
-            <line x1="18" y1="6" x2="6" y2="18" />
-            <line x1="6" y1="6" x2="18" y2="18" />
-          </svg>
-        ) : (
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
-          </svg>
-        )}
-      </button>
+      {/* Float button */}
+      <div style={{ position: 'fixed', bottom: '24px', right: '24px', zIndex: 50 }}>
+        <button
+          onClick={() => { setChatOpen(!chatOpen); if (!chatOpen) setChatMinimized(false); }}
+          style={{
+            width: '56px',
+            height: '56px',
+            borderRadius: '50%',
+            background: 'var(--accent-green)',
+            border: 'none',
+            cursor: 'pointer',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            boxShadow: 'var(--shadow-lg)',
+            color: 'white',
+            fontSize: '24px',
+            transition: 'transform 200ms ease',
+          }}
+          onMouseEnter={(e) => (e.currentTarget.style.transform = 'scale(1.1)')}
+          onMouseLeave={(e) => (e.currentTarget.style.transform = 'scale(1)')}
+        >
+          {chatOpen ? '\u2715' : '\ud83d\udcac'}
+        </button>
+      </div>
 
       {/* Chat panel */}
-      {open && (
+      {chatOpen && (
         <div
-          ref={panelRef}
+          ref={chatRef}
           style={{
             position: 'fixed',
-            bottom: 88,
-            right: 24,
-            width: 320,
-            maxHeight: minimized ? 48 : 'calc(100vh - 120px)',
-            backgroundColor: 'var(--bg-card)',
+            bottom: '88px',
+            right: '24px',
+            width: '320px',
+            maxHeight: chatMinimized ? '56px' : 'calc(100vh - 120px)',
+            background: 'var(--bg-elevated)',
             border: '1px solid var(--border)',
-            borderRadius: 16,
+            borderRadius: '18px',
             boxShadow: 'var(--shadow-lg)',
+            zIndex: 50,
             display: 'flex',
             flexDirection: 'column',
-            zIndex: 50,
-            fontFamily: "'Nunito', 'Source Sans 3', sans-serif",
             overflow: 'hidden',
             transition: 'max-height 300ms ease',
           }}
         >
           {/* Header */}
-          <div
-            style={{
-              backgroundColor: 'var(--accent-green)',
-              color: '#ffffff',
-              padding: '12px 12px 12px 16px',
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              flexShrink: 0,
-              height: 48,
-              cursor: minimized ? 'pointer' : 'default',
-            }}
-            onClick={minimized ? () => setMinimized(false) : undefined}
-          >
-            <span style={{ fontWeight: 700, fontSize: 14 }}>
+          <div style={{
+            padding: '16px 20px',
+            borderBottom: chatMinimized ? 'none' : '1px solid var(--border)',
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            flexShrink: 0,
+          }}>
+            <span style={{ fontWeight: 700, color: 'var(--text-primary)', fontSize: 14 }}>
               Bond Writing Assistant
             </span>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-              {/* Minimize / Expand */}
+            <div style={{ display: 'flex', gap: '8px' }}>
               <button
-                onClick={(e) => { e.stopPropagation(); setMinimized(!minimized); }}
+                onClick={() => setChatMinimized(!chatMinimized)}
                 style={{
-                  background: 'none', border: 'none', color: '#ffffff',
-                  cursor: 'pointer', padding: '4px 6px', lineHeight: 1,
-                  fontSize: 18, opacity: 0.8, borderRadius: 4,
+                  background: 'none', border: 'none',
+                  cursor: 'pointer', color: 'var(--text-muted)',
+                  fontSize: '18px', padding: '0 4px', lineHeight: 1,
                 }}
-                title={minimized ? 'Expand' : 'Minimize'}
               >
-                {minimized ? '+' : '\u2013'}
+                {chatMinimized ? '+' : '\u2014'}
               </button>
-              {/* Close */}
               <button
-                onClick={(e) => { e.stopPropagation(); setOpen(false); }}
+                onClick={() => setChatOpen(false)}
                 style={{
-                  background: 'none', border: 'none', color: '#ffffff',
-                  cursor: 'pointer', padding: '4px 6px', lineHeight: 1,
-                  fontSize: 18, opacity: 0.8, borderRadius: 4,
+                  background: 'none', border: 'none',
+                  cursor: 'pointer', color: 'var(--text-muted)',
+                  fontSize: '18px', padding: '0 4px', lineHeight: 1,
                 }}
-                title="Close"
               >
-                &times;
+                \u2715
               </button>
             </div>
           </div>
 
-          {/* Body — hidden when minimized */}
-          {!minimized && (
+          {/* Body - hidden when minimized */}
+          {!chatMinimized && (
             <>
-              {/* Messages */}
-              <div
-                style={{
-                  flex: 1,
-                  overflowY: 'auto',
-                  padding: 12,
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: 8,
-                  minHeight: 0,
-                }}
-              >
-                {/* Prompt chips */}
+              {/* Messages area */}
+              <div style={{
+                flex: 1, overflowY: 'auto', padding: '16px',
+                display: 'flex', flexDirection: 'column', gap: 8, minHeight: 0,
+              }}>
+                {/* Prompt chips at top */}
                 {messages.length <= 1 && (
                   <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginBottom: 8 }}>
                     {PROMPT_CHIPS.map((chip) => (
@@ -215,9 +175,9 @@ function FarmerAssistant() {
                         disabled={sending}
                         style={{
                           fontSize: 11, padding: '5px 10px', borderRadius: 16,
-                          border: '1px solid var(--border)', backgroundColor: 'var(--bg-secondary)',
+                          border: '1px solid var(--border)',
+                          backgroundColor: 'var(--bg-glass, var(--bg-secondary))',
                           color: 'var(--text-secondary)', cursor: 'pointer',
-                          fontFamily: "'Nunito', sans-serif", transition: 'background-color 150ms',
                         }}
                       >
                         {chip}
@@ -233,7 +193,7 @@ function FarmerAssistant() {
                       alignSelf: msg.role === 'user' ? 'flex-end' : 'flex-start',
                       maxWidth: '85%', padding: '8px 12px',
                       borderRadius: msg.role === 'user' ? '12px 12px 2px 12px' : '12px 12px 12px 2px',
-                      backgroundColor: msg.role === 'user' ? 'var(--accent-green)' : 'var(--bg-elevated)',
+                      backgroundColor: msg.role === 'user' ? 'var(--accent-green)' : 'var(--bg-glass, var(--bg-card))',
                       color: msg.role === 'user' ? '#ffffff' : 'var(--text-primary)',
                       fontSize: 13, lineHeight: 1.5, whiteSpace: 'pre-wrap',
                     }}
@@ -244,7 +204,8 @@ function FarmerAssistant() {
                 {sending && (
                   <div style={{
                     alignSelf: 'flex-start', padding: '8px 12px',
-                    borderRadius: '12px 12px 12px 2px', backgroundColor: 'var(--bg-elevated)',
+                    borderRadius: '12px 12px 12px 2px',
+                    backgroundColor: 'var(--bg-glass, var(--bg-card))',
                     color: 'var(--text-muted)', fontSize: 13,
                   }}>
                     Thinking...
@@ -253,11 +214,11 @@ function FarmerAssistant() {
                 <div ref={messagesEndRef} />
               </div>
 
-              {/* Input */}
+              {/* Input form */}
               <form
                 onSubmit={handleSubmit}
                 style={{
-                  display: 'flex', gap: 8, padding: '10px 12px',
+                  display: 'flex', gap: 8, padding: '12px 16px',
                   borderTop: '1px solid var(--border)', flexShrink: 0,
                 }}
               >
@@ -268,20 +229,19 @@ function FarmerAssistant() {
                   placeholder="Type a message..."
                   disabled={sending}
                   style={{
-                    flex: 1, padding: '8px 12px', border: '1px solid var(--border)',
-                    borderRadius: 8, fontSize: 13, outline: 'none',
-                    backgroundColor: 'var(--bg-elevated)', color: 'var(--text-primary)',
-                    fontFamily: "'Nunito', sans-serif",
+                    flex: 1, padding: '8px 12px',
+                    border: '1px solid var(--border)', borderRadius: 10,
+                    fontSize: 13, outline: 'none',
+                    backgroundColor: 'var(--bg-card)', color: 'var(--text-primary)',
                   }}
                 />
                 <button
                   type="submit"
                   disabled={sending || !input.trim()}
                   style={{
-                    padding: '8px 14px', backgroundColor: 'var(--accent-green)',
-                    color: '#ffffff', border: 'none', borderRadius: 8,
+                    padding: '8px 16px', backgroundColor: 'var(--accent-green)',
+                    color: '#ffffff', border: 'none', borderRadius: 10,
                     cursor: 'pointer', fontSize: 13, fontWeight: 700,
-                    fontFamily: "'Nunito', sans-serif",
                     opacity: sending || !input.trim() ? 0.5 : 1,
                   }}
                 >
@@ -292,13 +252,6 @@ function FarmerAssistant() {
           )}
         </div>
       )}
-
-      {/* Mobile responsive override */}
-      <style>{`
-        @media (max-width: 768px) {
-          [data-chat-panel] { width: calc(100vw - 48px) !important; }
-        }
-      `}</style>
     </>
   );
 }
