@@ -386,7 +386,7 @@ function App() {
   });
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: 'var(--bg-primary)' }}>
+    <div className="min-h-screen" style={{ backgroundColor: 'var(--bg-primary)', overflowX: 'hidden', overflowY: 'auto' }}>
       {/* Navigation */}
       <nav
         className="sticky top-0 z-50"

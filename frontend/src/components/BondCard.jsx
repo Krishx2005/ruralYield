@@ -65,26 +65,50 @@ function BondCard({ bond, showInvest = false, onInvested }) {
   const handleReadAloud = async () => {
     setSpeaking(true);
     setError('');
+    const summary = `Bond: ${bond.title}. Amount: ${formatCurrency(
+      bond.amount
+    )}. Crop type: ${bond.crop_type}. County: ${bond.county}. Risk level: ${riskLevel}. Compliance score: ${complianceScore} percent.`;
+
+    // Try ElevenLabs TTS API first
     try {
-      const summary = `Bond: ${bond.title}. Amount: ${formatCurrency(
-        bond.amount
-      )}. Crop type: ${bond.crop_type}. County: ${bond.county}. Risk level: ${riskLevel}. Compliance score: ${complianceScore} percent.`;
       const audioBlob = await synthesizeSpeech(summary);
-      const url = URL.createObjectURL(audioBlob);
-      const audio = new Audio(url);
-      audio.onended = () => {
-        setSpeaking(false);
-        URL.revokeObjectURL(url);
-      };
-      audio.onerror = () => {
-        setSpeaking(false);
-        URL.revokeObjectURL(url);
-      };
-      await audio.play();
+      if (audioBlob && audioBlob.size > 0) {
+        const url = URL.createObjectURL(audioBlob);
+        const audio = new Audio(url);
+        audio.onended = () => {
+          setSpeaking(false);
+          URL.revokeObjectURL(url);
+        };
+        audio.onerror = () => {
+          setSpeaking(false);
+          URL.revokeObjectURL(url);
+        };
+        await audio.play();
+        return;
+      }
     } catch {
-      setError('Speech synthesis unavailable');
-      setSpeaking(false);
+      // ElevenLabs failed, try browser fallback
     }
+
+    // Fallback to browser Web Speech API
+    if (window.speechSynthesis) {
+      try {
+        const utterance = new SpeechSynthesisUtterance(summary);
+        utterance.onend = () => setSpeaking(false);
+        utterance.onerror = () => {
+          setSpeaking(false);
+          setError('Voice unavailable - check ElevenLabs API key');
+        };
+        window.speechSynthesis.speak(utterance);
+        return;
+      } catch {
+        // Browser speech also failed
+      }
+    }
+
+    // Both failed
+    setError('Voice unavailable - check ElevenLabs API key');
+    setSpeaking(false);
   };
 
   const toggleWatchlist = async () => {
