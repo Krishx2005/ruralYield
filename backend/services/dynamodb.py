@@ -60,7 +60,7 @@ def _convert_decimals(obj):
 
 async def create_bond(bond_data: dict) -> dict:
     """Create a new bond record. Returns dict with bond_id."""
-    bond_id = str(uuid.uuid4())
+    bond_id = bond_data.get("bond_id") or str(uuid.uuid4())
     now = datetime.now(timezone.utc).isoformat()
 
     record = {
