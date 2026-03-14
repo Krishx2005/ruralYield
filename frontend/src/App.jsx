@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Routes, Route, NavLink, Link } from 'react-router-dom';
+import { Routes, Route, NavLink, Link, useLocation } from 'react-router-dom';
+import { AnimatePresence } from 'framer-motion';
+import PageTransition from './components/PageTransition';
 import FarmerDashboard from './pages/FarmerDashboard';
 import InvestorDashboard from './pages/InvestorDashboard';
 import BondDetail from './pages/BondDetail';
@@ -361,6 +363,7 @@ function HomePage() {
 
 /* ─── Main App ─── */
 function App() {
+  const location = useLocation();
   const [showOnboarding, setShowOnboarding] = useState(false);
   const [hasInvestorProfile, setHasInvestorProfile] = useState(false);
   const [darkMode, setDarkMode] = useState(() => localStorage.getItem('theme') === 'dark');
@@ -495,90 +498,114 @@ function App() {
       </nav>
 
       {/* Main Content */}
-      <Routes>
-        <Route
-          path="/"
-          element={
-            showOnboarding ? (
-              <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-                <FarmerOnboarding onComplete={handleOnboardingComplete} />
-              </main>
-            ) : (
-              <HomePage />
-            )
-          }
-        />
-        <Route
-          path="/farmer"
-          element={
-            <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-              <FarmerDashboard />
-            </main>
-          }
-        />
-        <Route
-          path="/investor"
-          element={
-            <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-              <InvestorDashboard />
-            </main>
-          }
-        />
-        <Route
-          path="/bond/:id"
-          element={
-            <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-              <BondDetail />
-            </main>
-          }
-        />
-        <Route
-          path="/portfolio"
-          element={
-            <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-              <InvestorProfile />
-            </main>
-          }
-        />
-        <Route
-          path="/analytics"
-          element={
-            <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-              <AnalyticsDashboard />
-            </main>
-          }
-        />
-        <Route path="/demo" element={<DemoPage />} />
-        <Route path="/pitch" element={<PitchDeck />} />
-        <Route
-          path="/compare"
-          element={
-            <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-              <CountyCompare />
-            </main>
-          }
-        />
-        <Route
-          path="/impact"
-          element={<ImpactDashboard />}
-        />
-        <Route
-          path="/farm/:farmer_id"
-          element={
-            <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-              <FarmProfile />
-            </main>
-          }
-        />
-        <Route
-          path="/market"
-          element={
-            <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-              <SecondaryMarket />
-            </main>
-          }
-        />
-      </Routes>
+      <AnimatePresence mode="wait">
+        <Routes location={location} key={location.pathname}>
+          <Route
+            path="/"
+            element={
+              <PageTransition>
+                {showOnboarding ? (
+                  <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+                    <FarmerOnboarding onComplete={handleOnboardingComplete} />
+                  </main>
+                ) : (
+                  <HomePage />
+                )}
+              </PageTransition>
+            }
+          />
+          <Route
+            path="/farmer"
+            element={
+              <PageTransition>
+                <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+                  <FarmerDashboard />
+                </main>
+              </PageTransition>
+            }
+          />
+          <Route
+            path="/investor"
+            element={
+              <PageTransition>
+                <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+                  <InvestorDashboard />
+                </main>
+              </PageTransition>
+            }
+          />
+          <Route
+            path="/bond/:id"
+            element={
+              <PageTransition>
+                <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+                  <BondDetail />
+                </main>
+              </PageTransition>
+            }
+          />
+          <Route
+            path="/portfolio"
+            element={
+              <PageTransition>
+                <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+                  <InvestorProfile />
+                </main>
+              </PageTransition>
+            }
+          />
+          <Route
+            path="/analytics"
+            element={
+              <PageTransition>
+                <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+                  <AnalyticsDashboard />
+                </main>
+              </PageTransition>
+            }
+          />
+          <Route path="/demo" element={<DemoPage />} />
+          <Route path="/pitch" element={<PitchDeck />} />
+          <Route
+            path="/compare"
+            element={
+              <PageTransition>
+                <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+                  <CountyCompare />
+                </main>
+              </PageTransition>
+            }
+          />
+          <Route
+            path="/impact"
+            element={
+              <PageTransition>
+                <ImpactDashboard />
+              </PageTransition>
+            }
+          />
+          <Route
+            path="/farm/:farmer_id"
+            element={
+              <PageTransition>
+                <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+                  <FarmProfile />
+                </main>
+              </PageTransition>
+            }
+          />
+          <Route
+            path="/market"
+            element={
+              <PageTransition>
+                <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+                  <SecondaryMarket />
+                </main>
+              </PageTransition>
+            }
+          />
+        </Routes>
+      </AnimatePresence>
     </div>
   );
 }
