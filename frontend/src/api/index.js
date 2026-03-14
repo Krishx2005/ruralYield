@@ -121,4 +121,59 @@ export async function getCountyAnalytics(county) {
   return response.data;
 }
 
+export async function getCreditScore(farmerId) {
+  const response = await api.post(`/farmers/${farmerId}/credit-score`);
+  return response.data;
+}
+
+export async function getFarmerProfile(farmerId) {
+  const response = await api.get(`/farmers/${farmerId}/profile`);
+  return response.data;
+}
+
+export async function getImpact() {
+  const response = await api.get('/impact');
+  return response.data;
+}
+
+export async function suggestPricing(data) {
+  const response = await api.post('/bonds/suggest-pricing', data);
+  return response.data;
+}
+
+export async function getMarketListings() {
+  const response = await api.get('/market');
+  return response.data;
+}
+
+export async function createListing(data) {
+  const response = await api.post('/market/list', data);
+  return response.data;
+}
+
+export async function buyListing(data) {
+  const response = await api.post('/market/buy', data);
+  return response.data;
+}
+
+export async function cancelListing(listingId) {
+  const response = await api.delete(`/market/${listingId}`);
+  return response.data;
+}
+
+export async function chatWithAssistant(messages) {
+  const response = await api.post('/assistant/chat', { messages });
+  return response.data;
+}
+
+export async function getBondMessages(bondId) {
+  const response = await api.get(`/bonds/${bondId}/messages`);
+  return response.data;
+}
+
+export async function postBondMessage(bondId, data) {
+  const response = await api.post(`/bonds/${bondId}/messages`, data);
+  return response.data;
+}
+
 export default api;

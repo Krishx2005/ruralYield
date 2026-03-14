@@ -8,6 +8,9 @@ import FarmerOnboarding from './pages/FarmerOnboarding';
 import AnalyticsDashboard from './pages/AnalyticsDashboard';
 import DemoPage from './pages/DemoPage';
 import CountyCompare from './pages/CountyCompare';
+import ImpactDashboard from './pages/ImpactDashboard';
+import FarmProfile from './pages/FarmProfile';
+import SecondaryMarket from './pages/SecondaryMarket';
 
 /* ─── Inline Landing Page ─── */
 function HomePage() {
@@ -435,6 +438,9 @@ function App() {
               <NavLink to="/compare" style={navLinkStyle}>
                 Compare
               </NavLink>
+              <NavLink to="/impact" style={navLinkStyle}>
+                Impact
+              </NavLink>
               {hasInvestorProfile && (
                 <NavLink to="/portfolio" style={navLinkStyle}>
                   Portfolio
@@ -545,6 +551,26 @@ function App() {
           element={
             <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
               <CountyCompare />
+            </main>
+          }
+        />
+        <Route
+          path="/impact"
+          element={<ImpactDashboard />}
+        />
+        <Route
+          path="/farm/:farmer_id"
+          element={
+            <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+              <FarmProfile />
+            </main>
+          }
+        />
+        <Route
+          path="/market"
+          element={
+            <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+              <SecondaryMarket />
             </main>
           }
         />

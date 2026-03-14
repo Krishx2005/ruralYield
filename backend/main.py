@@ -16,6 +16,12 @@ from routes.risk import router as risk_router
 from routes.investors import router as investors_router
 from routes.analytics import router as analytics_router
 from routes.activity import router as activity_router
+from routes.farmers import router as farmers_router
+from routes.impact import router as impact_router
+from routes.pricing import router as pricing_router
+from routes.market import router as market_router
+from routes.assistant import router as assistant_router
+from routes.messages import router as messages_router
 
 logging.basicConfig(
     level=logging.INFO,
@@ -169,6 +175,12 @@ app.include_router(risk_router)
 app.include_router(investors_router)
 app.include_router(analytics_router)
 app.include_router(activity_router)
+app.include_router(farmers_router)
+app.include_router(impact_router)
+app.include_router(pricing_router)
+app.include_router(market_router)
+app.include_router(assistant_router)
+app.include_router(messages_router)
 
 
 @app.get("/health")

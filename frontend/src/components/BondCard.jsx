@@ -222,6 +222,14 @@ function BondCard({ bond, showInvest = false, onInvested }) {
           {bond.farmer_name}
         </p>
       )}
+      {bond.farmer_name && (
+        <Link
+          to={`/farm/${bond.farmer_name.toLowerCase().replace(/\s+/g, '_')}`}
+          style={{ fontSize: 11, color: 'var(--accent-green)', textDecoration: 'none' }}
+        >
+          View Farm →
+        </Link>
+      )}
 
       {/* Amount - hero element */}
       <p
