@@ -47,11 +47,11 @@ function BondCard({ bond, showInvest = false, onInvested }) {
   const [isWatchlisted, setIsWatchlisted] = useState(false);
   const [watchlistLoading, setWatchlistLoading] = useState(false);
 
-  const riskLevel = bond.risk_assessment?.risk_level || bond.risk_level || 'MEDIUM';
-  const riskScore = bond.risk_assessment?.risk_score || bond.risk_score || 0;
+  const riskLevel = bond.risk_result?.risk_level || bond.risk_assessment?.risk_level || bond.risk_level || 'MEDIUM';
+  const riskScore = bond.risk_result?.risk_score || bond.risk_assessment?.risk_score || bond.risk_score || 0;
   const complianceScore =
-    bond.compliance_report?.compliance_score || bond.compliance_score || 0;
-  const yieldData = bond.usda_yield_data || bond.yield_data;
+    bond.compliance_result?.compliance_score || bond.compliance_report?.compliance_score || bond.compliance_score || 0;
+  const yieldData = bond.usda_data || bond.usda_yield_data || bond.yield_data;
   const riskStyle = RISK_STYLES[riskLevel] || RISK_STYLES.MEDIUM;
   const statusStyle = STATUS_STYLES[bond.status] || STATUS_STYLES.PENDING;
 

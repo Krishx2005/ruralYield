@@ -3,8 +3,8 @@ import { CheckCircle, AlertTriangle, Lightbulb, PartyPopper } from 'lucide-react
 
 function AgentExplainer({ bond }) {
   const status = bond.status || 'PENDING';
-  const compliance = bond.compliance_report || bond.compliance_result || {};
-  const risk = bond.risk_assessment || bond.risk_result || {};
+  const compliance = bond.compliance_result || bond.compliance_report || {};
+  const risk = bond.risk_result || bond.risk_assessment || {};
   const isApproved = status === 'APPROVED' || status === 'FUNDED';
   const isRejected = status === 'REJECTED';
 

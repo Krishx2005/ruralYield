@@ -90,7 +90,7 @@ function BondDetail() {
         bond.amount
       )}. Status: ${bond.status}. Crop type: ${bond.crop_type}. County: ${
         bond.county
-      }. ${bond.risk_assessment?.reasoning || ''}`;
+      }. ${bond.risk_result?.reasoning || bond.risk_assessment?.reasoning || ''}`;
       const audioBlob = await synthesizeSpeech(text);
       const url = URL.createObjectURL(audioBlob);
       const audio = new Audio(url);
@@ -186,11 +186,11 @@ function BondDetail() {
 
   if (!bond) return null;
 
-  const compliance = bond.compliance_report || bond.compliance || null;
-  const risk = bond.risk_assessment || bond.risk || null;
-  const agentSteps = bond.agent_steps || bond.processing_steps || [];
+  const compliance = bond.compliance_result || bond.compliance_report || bond.compliance || null;
+  const risk = bond.risk_result || bond.risk_assessment || bond.risk || null;
+  const agentSteps = bond.agent_steps || bond.processing_steps || bond.audit_trail || [];
   const ledger = bond.ledger_transactions || bond.transactions || [];
-  const yieldData = bond.usda_yield_data || bond.yield_data || null;
+  const yieldData = bond.usda_data || bond.usda_yield_data || bond.yield_data || null;
   const statusStyle = STATUS_STYLES[bond.status] || STATUS_STYLES.PENDING;
   const riskStyle = RISK_STYLES[risk?.risk_level] || RISK_STYLES.MEDIUM;
 
