@@ -11,6 +11,7 @@ import CountyCompare from './pages/CountyCompare';
 import ImpactDashboard from './pages/ImpactDashboard';
 import FarmProfile from './pages/FarmProfile';
 import SecondaryMarket from './pages/SecondaryMarket';
+import PitchDeck from './pages/PitchDeck';
 
 /* ─── Inline Landing Page ─── */
 function HomePage() {
@@ -350,6 +351,8 @@ function HomePage() {
           }}
         >
           &copy; 2026 RuralYield &middot; Powered by AWS
+          <span style={{ margin: '0 8px' }}>&middot;</span>
+          <Link to="/pitch" style={{ color: '#ffffff', opacity: 0.7, textDecoration: 'none' }}>Presentation Mode</Link>
         </div>
       </footer>
     </div>
@@ -546,6 +549,7 @@ function App() {
           }
         />
         <Route path="/demo" element={<DemoPage />} />
+        <Route path="/pitch" element={<PitchDeck />} />
         <Route
           path="/compare"
           element={
